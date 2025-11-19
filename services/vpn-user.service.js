@@ -29,13 +29,15 @@ class VPNUserService {
       const expiryDate = this._calculateExpiryDate(expiryDays);
 
       // Create user
-      await executeCommand(`useradd -m -s /bin/bash ${username}`);
+      await executeCommand(`useradd -m -s /bin/bash "${username}"`);
       
-      // Set password
-      await executeCommand(`echo '${username}:${password}' | chpasswd`);
+      // Set password using stdin to avoid command injection
+      // Note: In production, consider using a more secure method like pam_unix or expect
+      const escapedPassword = password.replace(/'/g, "'\\''");
+      await executeCommand(`echo '${username}:${escapedPassword}' | chpasswd`);
       
       // Set expiry date
-      await executeCommand(`usermod -e ${expiryDate} ${username}`);
+      await executeCommand(`usermod -e "${expiryDate}" "${username}"`);
 
       logger.info(`SSH user created: ${username}, expires: ${expiryDate}`);
 
@@ -247,7 +249,7 @@ class VPNUserService {
       // Check SSH
       if (await userExists(username)) {
         const expiry = await executeCommandSimple(
-          `chage -l ${username} | grep "Account expires" | awk -F": " '{print $2}'`
+          `chage -l "${username}" | grep "Account expires" | awk -F": " '{print $2}'`
         );
         return {
           username,
@@ -315,7 +317,7 @@ class VPNUserService {
 
       // Check and delete SSH user
       if (await userExists(username)) {
-        await executeCommand(`userdel -r ${username}`);
+        await executeCommand(`userdel -r "${username}"`);
         deletedFrom.push('ssh');
         logger.info(`Deleted SSH user: ${username}`);
       }
@@ -372,7 +374,7 @@ class VPNUserService {
       // Check SSH
       if (await userExists(username)) {
         const newExpiryDate = this._calculateExpiryDate(additionalDays);
-        await executeCommand(`usermod -e ${newExpiryDate} ${username}`);
+        await executeCommand(`usermod -e "${newExpiryDate}" "${username}"`);
         logger.info(`Renewed SSH user: ${username}, new expiry: ${newExpiryDate}`);
         return {
           username,
@@ -432,10 +434,11 @@ class VPNUserService {
       if (await userExists(username)) {
         if (expiry_days) {
           const newExpiryDate = this._calculateExpiryDate(expiry_days);
-          await executeCommand(`usermod -e ${newExpiryDate} ${username}`);
+          await executeCommand(`usermod -e "${newExpiryDate}" "${username}"`);
         }
         if (password) {
-          await executeCommand(`echo '${username}:${password}' | chpasswd`);
+          const escapedPassword = password.replace(/'/g, "'\\''");
+          await executeCommand(`echo '${username}:${escapedPassword}' | chpasswd`);
         }
         logger.info(`Updated SSH user: ${username}`);
         return {
@@ -583,7 +586,7 @@ class VPNUserService {
           if (uid >= 1000 && username !== 'nobody') {
             try {
               const expiry = await executeCommandSimple(
-                `chage -l ${username} | grep "Account expires" | awk -F": " '{print $2}'`
+                `chage -l "${username}" | grep "Account expires" | awk -F": " '{print $2}'`
               );
               sshUsers.push({
                 username,

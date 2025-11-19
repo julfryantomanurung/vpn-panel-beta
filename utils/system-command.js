@@ -39,7 +39,7 @@ async function executeCommandSimple(command) {
  */
 async function userExists(username) {
   try {
-    await executeCommand(`id ${username}`);
+    await executeCommand(`id "${username}"`);
     return true;
   } catch (error) {
     return false;
@@ -53,7 +53,7 @@ async function userExists(username) {
  */
 async function isServiceRunning(serviceName) {
   try {
-    const { stdout } = await executeCommand(`systemctl is-active ${serviceName}`);
+    const { stdout } = await executeCommand(`systemctl is-active "${serviceName}"`);
     return stdout.trim() === 'active';
   } catch (error) {
     return false;
