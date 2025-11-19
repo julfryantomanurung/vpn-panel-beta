@@ -1,0 +1,68 @@
+[
+  {
+    "id": "04aec500-c3d5-4865-a6d7-2cfed2330c4d",
+    "name": "Buat Pengguna",
+    "action": "create_user",
+    "icon": "user-plus",
+    "order": 1,
+    "parent_id": null,
+    "roles": [
+      "admin"
+    ],
+    "visible": true,
+    "description": "Create new VPN user"
+  },
+  {
+    "id": "acf3921f-da76-4f59-8a6a-568e0214e306",
+    "name": "Hapus Pengguna",
+    "action": "delete_user",
+    "icon": "user-minus",
+    "order": 2,
+    "parent_id": null,
+    "roles": [
+      "admin"
+    ],
+    "visible": true,
+    "description": "Delete VPN user"
+  },
+  {
+    "id": "dcc55f49-76e5-4e10-8e18-84c0d20970d3",
+    "name": "Daftar Pengguna",
+    "action": "list_users",
+    "icon": "users",
+    "order": 3,
+    "parent_id": null,
+    "roles": [
+      "admin",
+      "user"
+    ],
+    "visible": true,
+    "description": "List all VPN users"
+  },
+  {
+    "id": "a982bdca-f586-46d0-94b4-b82650223a33",
+    "name": "Perbarui Sertifikat SSL",
+    "action": "renew_ssl",
+    "icon": "certificate",
+    "order": 4,
+    "parent_id": null,
+    "roles": [
+      "admin"
+    ],
+    "visible": true,
+    "description": "Renew SSL certificate"
+  },
+  {
+    "id": "82ed0221-cb76-4777-9d0d-9512742f5134",
+    "name": "Reboot Server",
+    "action": "reboot_server",
+    "icon": "power",
+    "order": 5,
+    "parent_id": null,
+    "roles": [
+      "admin"
+    ],
+    "visible": true,
+    "description": "Reboot the server"
+  }
+]
